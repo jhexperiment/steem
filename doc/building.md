@@ -24,7 +24,7 @@ Builds steem for use in a private testnet. Also required for building unit tests
 
 ### SKIP_BY_TX_ID=[OFF/ON]
 
-By default this is off. Enabling will prevent the account history plugin querying transactions 
+By default this is off. Enabling will prevent the account history plugin querying transactions
 by id, but saving around 65% of CPU time when reindexing. Enabling this option is a
 huge gain if you do not need this functionality.
 
@@ -228,3 +228,143 @@ This will only build `steemd`.
   Intel and Microsoft compilers. These compilers may work, but the
   developers do not use them. Pull requests fixing warnings / errors from
   these compilers are accepted.
+
+
+## Building on the Test Network
+
+Follow the same build instructions as above but add
+
+    -DBUILD_STEEM_TESTNET=true
+
+to your `cmake` command.
+
+e.g.:
+
+    cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_STEEM_TESTNET=true ..
+
+Which should output
+
+    -- BUILD_STEEM_TESTNET: ON
+    --
+    --              CONFIGURING FOR TEST NET
+    --
+
+    ....
+
+    -- Finished fc module configuration...
+    --
+
+                 CONFIGURED FOR TEST NETWORK
+
+    -- Configuring done
+    -- Generating done
+    -- Build files have been written to: ...
+
+## Configuring the Test Network
+
+After successfully building, configure `steemd` for the Test Network.
+
+    cd programs/steemd
+    ./steemd -d testnet
+
+Which should output
+
+    ------------------------------------------------------
+
+                STARTING TEST NETWORK
+
+    ------------------------------------------------------
+    initminer public key: TST6LLegbAgLAy28EHrffBVuANFWcFgmqRMW13wBmTExqFE9SCkg4
+    initminer private key: 5JNHfZYKGaomSFvd4NUdQ9qMcEAC43kujbfjueTHpVapX1Kzq2n
+    chain id: 18dcf0a285365fc58b71f18b3d3fec954aa0c141c44e4e5cb4cf777b9eab274e
+    blockchain version: 0.19.2
+    ------------------------------------------------------
+    1723906ms th_a       main.cpp:138                  main                 ] Writing new config file at build/programs/steemd/testnet/config.ini
+    1724097ms th_a       witness_plugin.cpp:505        plugin_startup       ] No witnesses configured! Please add witness names and private keys to configuration.
+
+Press `CTRL + c` to stop the process
+
+    1726622ms asio       main.cpp:187                  operator()           ] Caught SIGINT attempting to exit cleanly
+
+Update `build/programs/steemd/testnet/config.ini` with:
+
+    p2p-endpoint = 0.0.0.0:3333
+
+Sets `steemd` to p2p on port 3333
+
+    rpc-endpoint = 0.0.0.0:9876
+
+Sets `steemd` to p2p on port 9876
+
+    witness = "initminer"
+
+    private-key = 5JNHfZYKGaomSFvd4NUdQ9qMcEAC43kujbfjueTHpVapX1Kzq2n
+
+Sets initial witness to initminer for block mining
+
+    [logger.default]
+    level=debug
+
+Optional but recommended for testing
+
+After updating, relaunch `steemd` with
+
+    ./steemd -d testnet --enable-stale-production
+
+Which will output
+
+    ------------------------------------------------------
+
+                STARTING TEST NETWORK
+
+    ------------------------------------------------------
+    initminer public key: TST6LLegbAgLAy28EHrffBVuANFWcFgmqRMW13wBmTExqFE9SCkg4
+    initminer private key: 5JNHfZYKGaomSFvd4NUdQ9qMcEAC43kujbfjueTHpVapX1Kzq2n
+    chain id: 18dcf0a285365fc58b71f18b3d3fec954aa0c141c44e4e5cb4cf777b9eab274e
+    blockchain version: 0.19.2
+    ------------------------------------------------------
+    2510392ms th_a       main.cpp:172                  main                 ] parsing options
+    2510392ms th_a       main.cpp:174                  main                 ] initializing node
+    2510392ms th_a       main.cpp:176                  main                 ] initializing plugins
+    2510392ms th_a       application.cpp:1148          initialize_plugins   ] Initializing plugin account_by_key
+    2510392ms th_a       account_by_key_plugin.cpp:256 plugin_initialize    ] Initializing account_by_key plugin
+    2510392ms th_a       application.cpp:1148          initialize_plugins   ] Initializing plugin account_history
+    2510392ms th_a       application.cpp:1148          initialize_plugins   ] Initializing plugin witness
+    2510414ms th_a       main.cpp:179                  main                 ] starting node
+    2510414ms th_a       application.cpp:259           startup              ] Backtrace on segfault is enabled
+    2510414ms th_a       application.cpp:263           startup              ] shared_file_size is 57982058496 bytes
+    2510415ms th_a       application.cpp:281           startup              ] Starting Steem node in write mode.
+    2510416ms th_a       database.cpp:2578             show_free_memory     ] Free memory is now 53G
+    2510416ms th_a       application.cpp:384           startup              ] API database_api enabled publicly
+    2510416ms th_a       application.cpp:384           startup              ] API login_api enabled publicly
+    2510416ms th_a       application.cpp:384           startup              ] API account_by_key_api enabled publicly
+    2510417ms th_a       application.cpp:137           reset_p2p_node       ] Configured p2p node to listen on 0.0.0.0:3333
+    2510417ms th_a       application.cpp:145           reset_p2p_node       ] head_block_id: 0000000000000000000000000000000000000000
+    2510418ms th_a       application.cpp:187           reset_websocket_serv ] Configured websocket rpc to listen on 0.0.0.0:9876
+    2510418ms th_a       main.cpp:181                  main                 ] starting plugins
+    2510418ms th_a       account_history_plugin.cpp:253 plugin_startup       ] account_history plugin: plugin_startup() begin
+    2510418ms th_a       account_history_plugin.cpp:255 plugin_startup       ] account_history plugin: plugin_startup() end
+    2510418ms th_a       witness_plugin.cpp:487        plugin_startup       ] witness plugin:  plugin_startup() begin
+    2510418ms th_a       witness_plugin.cpp:492        plugin_startup       ] Launching block production for 1 witnesses.
+    2510418ms th_a       witness_plugin.cpp:493        plugin_startup       ] \_witnesses: ["initminer"]
+
+    ********************************
+    *                              *
+    *   ------- NEW CHAIN ------   *
+    *   -   Welcome to Steem!  -   *
+    *   ------------------------   *
+    *                              *
+    ********************************
+
+    2510422ms th_a       witness_plugin.cpp:507        plugin_startup       ] witness plugin:  plugin_startup() end
+    2510422ms th_a       main.cpp:198                  operator()           ] Started witness node on a chain with 0 blocks.
+    2511013ms th_a       database.cpp:3629             apply_hardfork       ] HARDFORK 1 at block 1
+    2511013ms th_a       database.cpp:3629             apply_hardfork       ] HARDFORK 2 at block 1
+    2511013ms th_a       database.cpp:3629             apply_hardfork       ] HARDFORK 3 at block 1
+    2511013ms th_a       database.cpp:3629             apply_hardfork       ] HARDFORK 4 at block 1
+    2511013ms th_a       database.cpp:3629             apply_hardfork       ] HARDFORK 5 at block 1
+    2511013ms th_a       witness_plugin.cpp:566        block_production_loo ] Generated block #1 with timestamp 2018-02-19T00:41:51 at time 2018-02-19T00:41:51 by initminer
+    2514003ms th_a       witness_plugin.cpp:566        block_production_loo ] Generated block #2 with timestamp 2018-02-19T00:41:54 at time 2018-02-19T00:41:54 by initminer
+
+
+`steemd` will now be running with blocks being mined by the "initminer" account    
