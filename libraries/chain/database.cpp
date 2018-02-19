@@ -1780,7 +1780,7 @@ void database::process_funds()
    const auto& props = get_dynamic_global_properties();
    const auto& wso = get_witness_schedule_object();
 
-   if( has_hardfork( STEEMIT_HARDFORK_0_16__551) )
+   if( true || has_hardfork( STEEMIT_HARDFORK_0_16__551) )
    {
       /**
        * At block 7,000,000 have a 9.5% instantaneous inflation rate, decreasing to 0.95% at a rate of 0.01%
@@ -1792,8 +1792,16 @@ void database::process_funds()
 
       // below subtraction cannot underflow int64_t because inflation_rate_adjustment is <2^32
       int64_t current_inflation_rate = std::max( start_inflation_rate - inflation_rate_adjustment, inflation_rate_floor );
+      ilog( "start_inflation_rate: ${i}", ("i", start_inflation_rate) );
+      ilog( "inflation_rate_adjustment: ${i}", ("i", inflation_rate_adjustment) );
+      ilog( "inflation_rate_floor: ${i}", ("i", inflation_rate_floor) );
+      ilog( "current_inflation_rate: ${i}", ("i", current_inflation_rate) );
+
 
       auto new_steem = ( props.virtual_supply.amount * current_inflation_rate ) / ( int64_t( STEEMIT_100_PERCENT ) * int64_t( STEEMIT_BLOCKS_PER_YEAR ) );
+
+      ilog( "new_steem: ${i}", ("i", new_steem) );
+
       auto content_reward = ( new_steem * STEEMIT_CONTENT_REWARD_PERCENT ) / STEEMIT_100_PERCENT;
       if( has_hardfork( STEEMIT_HARDFORK_0_17__774 ) )
          content_reward = pay_reward_funds( content_reward ); /// 75% to content creator
