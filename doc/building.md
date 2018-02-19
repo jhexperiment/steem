@@ -368,3 +368,11 @@ Which will output
 
 
 `steemd` will now be running with blocks being mined by the "initminer" account    
+
+# Running a second witness node
+
+Follow the same steps to create another node, but add
+
+    seed-node = 10.10.10.10:3333
+
+to `testnet/config.ini` changing the IP address to the address of your first witness node.
