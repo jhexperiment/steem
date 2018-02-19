@@ -297,7 +297,7 @@ public:
       result["participation"] = (100*dynamic_props.recent_slots_filled.popcount()) / 128.0;
       result["median_sbd_price"] = _remote_db->get_current_median_history_price();
       result["account_creation_fee"] = _remote_db->get_chain_properties().account_creation_fee;
-      result["post_reward_fund"] = fc::variant(_remote_db->get_reward_fund( STEEMIT_POST_REWARD_FUND_NAME )).get_object();
+      // result["post_reward_fund"] = fc::variant(_remote_db->get_reward_fund( STEEMIT_POST_REWARD_FUND_NAME )).get_object();
       return result;
    }
 
@@ -1766,7 +1766,7 @@ annotated_signed_transaction wallet_api::vote_for_witness(string voting_account,
 void wallet_api::check_memo( const string& memo, const account_api_obj& account )const
 {
    vector< public_key_type > keys;
-      
+
    try
    {
       // Check if memo is a private key
@@ -2469,4 +2469,3 @@ vector<extended_message_object>   wallet_api::get_outbox( string account, fc::ti
 }
 
 } } // steemit::wallet
-
