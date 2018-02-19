@@ -19,8 +19,8 @@
 #define STEEMIT_SYMBOL                          "TEST"
 #define STEEMIT_ADDRESS_PREFIX                  "TST"
 
-#define STEEMIT_GENESIS_TIME                    (fc::time_point_sec(1451606400))
-#define STEEMIT_MINING_TIME                     (fc::time_point_sec(1451606400))
+#define STEEMIT_GENESIS_TIME                    (fc::time_point_sec(1518652800))
+#define STEEMIT_MINING_TIME                     (fc::time_point_sec(1518652800))
 #define STEEMIT_CASHOUT_WINDOW_SECONDS          (60*60) /// 1 hr
 #define STEEMIT_CASHOUT_WINDOW_SECONDS_PRE_HF12 (STEEMIT_CASHOUT_WINDOW_SECONDS)
 #define STEEMIT_CASHOUT_WINDOW_SECONDS_PRE_HF17 (STEEMIT_CASHOUT_WINDOW_SECONDS)
@@ -119,9 +119,10 @@
 #define STEEMIT_1_TENTH_PERCENT                 (STEEMIT_100_PERCENT/1000)
 #define STEEMIT_DEFAULT_SBD_INTEREST_RATE       (10*STEEMIT_1_PERCENT) ///< 10% APR
 
-#define STEEMIT_INFLATION_RATE_START_PERCENT    (978) // Fixes block 7,000,000 to 9.5%
+//#define STEEMIT_INFLATION_RATE_START_PERCENT    (978) // Fixes block 7,000,000 to 9.5%
+#define STEEMIT_INFLATION_RATE_START_PERCENT    (100) 
 #define STEEMIT_INFLATION_RATE_STOP_PERCENT     (95) // 0.95%
-#define STEEMIT_INFLATION_NARROWING_PERIOD      (250000) // Narrow 0.01% every 250k blocks
+#define STEEMIT_INFLATION_NARROWING_PERIOD      (10) // Narrow 0.01% every 10 blocks
 #define STEEMIT_CONTENT_REWARD_PERCENT          (75*STEEMIT_1_PERCENT) //75% of inflation, 7.125% inflation
 #define STEEMIT_VESTING_FUND_PERCENT            (15*STEEMIT_1_PERCENT) //15% of inflation, 1.425% inflation
 
@@ -215,7 +216,7 @@
 #define STEEMIT_MAX_PERMLINK_LENGTH             256
 #define STEEMIT_MAX_WITNESS_URL_LENGTH          2048
 
-#define STEEMIT_INIT_SUPPLY                     int64_t(0)
+#define STEEMIT_INIT_SUPPLY                     int64_t(250000ll)
 #define STEEMIT_MAX_SHARE_SUPPLY                int64_t(1000000000000000ll)
 #define STEEMIT_MAX_SIG_CHECK_DEPTH             2
 
